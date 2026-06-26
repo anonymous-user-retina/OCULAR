@@ -7,8 +7,6 @@ OCULAR provides a harmonized large-scale dataset of retinal artery-vein (A/V) an
 - [Pre-trained Model](#pre-trained-model)  
 - [Installation & Dependencies](#installation--dependencies)  
 - [Inference Pipeline](#inference-pipeline)  
-- [Example Outputs](#example-outputs)  
-- [Training & Evaluation](#training--evaluation)  
 - [Zone Extraction](#zone-extraction)
 - [Citation](#citation)  
 
