@@ -4,9 +4,9 @@ OCULAR provides a harmonized large-scale dataset of retinal artery-vein (A/V) an
 
 ## Table of Contents
 - [Dataset](#dataset)  
-- [Pre-trained Model](#pre-trained-model)  
+- [Pre-trained Model](#pre-trained-models)  
 - [Installation & Dependencies](#installation--dependencies)  
-- [Inference Pipeline](#inference-pipeline)  
+- [Inference Pipeline](#inference)  
 - [Zone Extraction](#zone-extraction)
 - [Release of New A/V Annotations](#release-of-new-artery-vein-annotations)
 - [Citation](#citation)  
@@ -15,8 +15,56 @@ OCULAR provides a harmonized large-scale dataset of retinal artery-vein (A/V) an
 
 ## Dataset
 
-OCULAR aggregates a diverse collection of publicly available retinal A/V datasets for **training**, **in-distribution (ID) testing**, and **out-of-distribution (OoD) evaluation**.  
+OCULAR aggregates a diverse collection of publicly available retinal A/V datasets for **training**, **in-distribution (ID) testing**, and **out-of-distribution (OoD) evaluation**. 
 Each block below corresponds to these splits.
+
+![Distribution shifts across datasets](figures/distribution_shift.png)
+
+*Figure 1. Illustrative retinal fundus images highlighting distribution shifts across datasets. **Left:** in-distribution (ID, green) examples from HRF, LES-AV, INSPIRE, and DRIVE used for model development. **Right:** representative out-of-distribution (OoD) images from near-OoD (TREND-AV, IOSTAR-AV, and MBRSET; yellow) and far-OoD (AV-WIDE, RAVIR; red) datasets showcasing substantial variability in imaging conditions, brightness, resolution, and field-of-view.*
+
+Below, we provide links to the original datasets (*Download Dataset*). We also release processed field-of-view (FOV) masks (original resolution) and optic disc annotations (after cropping to FOV and resizing to 1024x1024) whenever the original dataset did not provide them (*Download OD-FOV*). Leuven-Haifa, MBRSET, RAVIR and UNAF images are cropped to the FOV, so we don't provide masks either. 
+
+---
+
+### Training Datasets
+
+| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download Dataset | Download OD-FOV |
+|--------|---|--------|-----|----------------|--------|-------------| ----------- | -------- |
+| AVRDB | 100 | M,D | 45° | 1000×1054 | PK | HR | [[Link]](https://www.researchgate.net/publication/319165214_AVRDB_Annotated_Dataset_for_Vessel_Segmentation_and_Calculation_of_Arteriovenous_Ratio) | [[Link]](https://drive.google.com/drive/folders/1pAuM8KGVZFWE35e0VF-HXUHxsVv14qiR?usp=drive_link)
+| DRIVE | 40 | M | 45° | 584×565 | NL | DR | [[Link]](https://www.kaggle.com/datasets/andrewmvd/drive-digital-retinal-images-for-vessel-extraction) | [[Link]](https://drive.google.com/drive/folders/1IAJVZvx36Gxd-zY1H0RzbREOIV5jE8Yf?usp=drive_link)
+| ENRICH | 111 | M,D | 45° | 1958×2196 | BE | -- | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/12dSfWLPkDavscX6YDOj5T2MUDH60xKJz?usp=drive_link)
+| FIVES-AV | 75 | M | 45° | 1444×1444 | CN | -- | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/1kWVsiLnJFULJugtEcSfNg5H9tD29aOHJ?usp=drive_link)
+| Fundus-AVSeg | 100 | M | 45° | 1280×1280 | CN | -- | [[Link]](https://figshare.com/projects/Fundus-AVSeg_A_Fundus_Image_Dataset_for_AI-based_Artery-Vein_Vessel_Segmentation/229986) | [[Link]](https://drive.google.com/drive/folders/1EtX0-GT1YL3TnOgaqB1XqqWV2J1PHUxs?usp=sharing)
+| GAVE | 50 | M | 45° | 1536×1024 | CN | -- |[[Link]](https://zenodo.org/records/15081506) | [[Link]](https://drive.google.com/drive/folders/18Ei7P09KL4Afrzc0g0itct6JvnCPjM7T?usp=sharing)
+| GRAPE | 81 | M,D | 50° | 1444×1444 | CN | G | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/1WkSvGANC2sJ2GMM21ksZwoPK_9d4vJqN?usp=sharing)
+| HRF | 45 | M | 45° | 3504×2336 | DE | DR,G | [[Link]](https://www5.cs.fau.de/research/data/fundus-images/) | [[Link]](https://drive.google.com/drive/folders/1qKmhGe2GAQbGy6jbDwjTnYVs3_gd_s29?usp=sharing)
+| INSPIRE | 15 | D | 30° | 1444×1444 | US | POAG | [[Link]](https://eye.medicine.uiowa.edu/inspire-datasets) | [[Link]](https://drive.google.com/drive/folders/190G5aEG0jtR0F8dvlJ89NOpArRQXVlHz?usp=sharing)
+| LES-AV | 22 | D | 30° | 1620×1444 | BE | G | [[Link]](https://figshare.com/articles/dataset/LES-AV_dataset/11857698) | [[Link]](https://drive.google.com/drive/folders/1Jp8EHj-dMsvm3TqOxGJXbtfePTSCXkX6?usp=sharing)
+| Leuven-Haifa | 240 | D | 30° | 1444×1444 | BE | G | [[Link]](https://rdr.kuleuven.be/dataset.xhtml?persistentId=doi:10.48804/Z7SHGO) | [[Link]](https://drive.google.com/drive/folders/1-bHKysVBY_-oZZYC9fdrQxYGCrW6HoPZ?usp=sharing)
+| MAGREBHIA | 69 | M,D | 30° | 1444×1444 | NAf | G |[[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/13KEYxEdoZJxsuX5v6PNy798357tGcBbq?usp=sharing)
+| MESSIDOR-AV | 66 | M | 45° | 1444×1444 | FR | DR | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/19oXwqQ5zHSzzGQHb10mH44iKFhnKhIrU?usp=sharing)
+| PAPILA | 78 | D | 30° | 1444×1444 | ES | G | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/13CH7O2qGY4hmRf9wHw92bBt0tXks66DX?usp=sharing)
+
+---
+
+### In-Distribution Test Datasets
+
+| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download Dataset | Download OD-FOV |
+|--------|---|--------|-----|----------------|--------|-------------| ----------- | -------- |
+| DualModal | 30 | M | 45° | 1024×1024 | CN | H | [[Link]](https://ieee-dataport.org/documents/dualmodal2019-dataset#files) | [[Link]](https://drive.google.com/drive/folders/19LOoFHlihdUcKpfhZ54uolqG2r_EXER4?usp=sharing) |
+| UNAF | 15 | D | 45° | 1444×1444 | PY | DR | [[Link]](https://iopscience.iop.org/article/10.1088/1361-6579/ad3d28) | [[Link]](https://drive.google.com/drive/folders/10cKE-qjRRJ3giyzMUAaev1u3CEkf5kWu?usp=sharing) |
+
+---
+
+### Out-of-Distribution Test Datasets
+
+| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download Dataset | Download OD-FOV |
+|--------|---|--------|-----|----------------|--------|-------------| ----------- | -------- |
+| AV-WIDE | 26 | M | 200° | 829×1531 | US | AMD | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/18dT8ATsgpJXR-NGRcRUF3owGvbLm_2xs?usp=sharing)
+| IOSTAR-AV | 30 | M,D | 45° | 1024×1024 | NL | -- | [[Link]](https://www.retinacheck.org/download-iostar-retinal-vessel-segmentation-dataset) | [[Link]](https://drive.google.com/drive/folders/1n15NhE6ZB8NGve1fHxTYsxl5t7v0B-A1?usp=sharing)
+| MBRSET | 30 | M | 30° | 1444×1444 | BR | DR | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/13OlYGy_LLW0TCsnu9XfOFsqzOZRDoguj?usp=sharing)
+| RAVIR | 36 | D | 30° | 768×768 | US | DR,HR |[[Link]](https://ravirdataset.github.io/data/) | [[Link]](https://drive.google.com/drive/folders/17JBfOPTyHz5A3e4IdmrSu5siWqRJz6bX?usp=sharing)
+| TREND-AV | 48 | M | 45° | 1444×1444 | ME | H | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf) | [[Link]](https://drive.google.com/drive/folders/1HXWfSHnAWyxZAySROx9KDmEfjeMHOwts?usp=sharing)
 
 **Abbreviations:**  
 M: macula-centered, D: optic disc-centered  
@@ -28,54 +76,6 @@ PK: Pakistan, NL: Netherlands, CN: China, BL: Belgium, UK: United Kingdom, US: U
 PY: Paraguay, FR: France, ES: Spain, NAf: North Africa, BR: Brazil, CR: Croatia, IN: India, CAN: Canada, AUS: Australia.
 
 ---
-
-### Training Datasets
-
-| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download |
-|--------|---|--------|-----|----------------|--------|-------------| --------|
-| AVRDB | 100 | M,D | 45° | 1000×1054 | PK | HR | [[Link]](https://www.researchgate.net/publication/319165214_AVRDB_Annotated_Dataset_for_Vessel_Segmentation_and_Calculation_of_Arteriovenous_Ratio)
-| DRIVE | 40 | M | 45° | 584×565 | NL | DR | [[Link]](https://www.kaggle.com/datasets/andrewmvd/drive-digital-retinal-images-for-vessel-extraction)
-| ENRICH | 111 | M,D | 45° | 1958×2196 | BE | -- | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| FIVES-AV | 75 | M | 45° | 1444×1444 | CN | -- | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| Fundus-AVSeg | 100 | M | 45° | 1280×1280 | CN | -- | [[Link]](https://figshare.com/projects/Fundus-AVSeg_A_Fundus_Image_Dataset_for_AI-based_Artery-Vein_Vessel_Segmentation/229986)
-| GAVE | 50 | M | 45° | 1536×1024 | CN | -- |[[Link]](https://zenodo.org/records/15081506)
-| GRAPE | 81 | M,D | 50° | 1444×1444 | CN | G | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| HRF | 45 | M | 45° | 3504×2336 | DE | DR,G | [[Link]](https://www5.cs.fau.de/research/data/fundus-images/)
-| INSPIRE | 15 | D | 30° | 1444×1444 | US | POAG | [[Link]](https://eye.medicine.uiowa.edu/inspire-datasets)
-| LES-AV | 22 | D | 30° | 1620×1444 | BE | G | [[Link]](https://figshare.com/articles/dataset/LES-AV_dataset/11857698)
-| Leuven-Haifa | 240 | D | 30° | 1444×1444 | BE | G | [[Link]](https://rdr.kuleuven.be/dataset.xhtml?persistentId=doi:10.48804/Z7SHGO)
-| MAGREBHIA | 69 | M,D | 30° | 1444×1444 | NAf | G |[[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| MESSIDOR-AV | 66 | M | 45° | 1444×1444 | FR | DR | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| PAPILA | 78 | D | 30° | 1444×1444 | ES | G | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-
----
-
-### In-Distribution Test Datasets
-
-| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download |
-|--------|---|--------|-----|----------------|--------|-------------| --------|
-| DualModal | 30 | M | 45° | 1024×1024 | CN | H | [[Link]](https://ieee-dataport.org/documents/dualmodal2019-dataset#files) |
-| UNAF | 15 | D | 45° | 1444×1444 | PY | DR | [[Link]](https://iopscience.iop.org/article/10.1088/1361-6579/ad3d28) |
-
----
-
-### Out-of-Distribution Test Datasets
-
-| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download |
-|--------|---|--------|-----|----------------|--------|-------------| --------|
-| AV-WIDE | 26 | M | 200° | 829×1531 | US | AMD | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| IOSTAR-AV | 30 | M,D | 45° | 1024×1024 | NL | -- | [[Link]](https://www.retinacheck.org/download-iostar-retinal-vessel-segmentation-dataset)
-| MBRSET | 30 | M | 30° | 1444×1444 | BR | DR | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| RAVIR | 36 | D | 30° | 768×768 | US | DR,HR |[[Link]](https://ravirdataset.github.io/data/)
-| TREND-AV | 48 | M | 45° | 1444×1444 | ME | H | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-
----
-
-### Distribution Shift Illustration
-
-![Distribution shifts across datasets](figures/distribution_shift.png)
-
-*Figure 1. Illustrative retinal fundus images highlighting distribution shifts across datasets. **Left:** in-distribution (ID, green) examples from HRF, LES-AV, INSPIRE, and DRIVE used for model development. **Right:** representative out-of-distribution (OoD) images from near-OoD (TREND-AV, IOSTAR-AV, and MBRSET; yellow) and far-OoD (AV-WIDE, RAVIR; red) datasets showcasing substantial variability in imaging conditions, brightness, resolution, and field-of-view.*
 
 ## Pre-trained Models
 
