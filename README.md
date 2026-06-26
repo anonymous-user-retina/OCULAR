@@ -8,6 +8,7 @@ OCULAR provides a harmonized large-scale dataset of retinal artery-vein (A/V) an
 - [Installation & Dependencies](#installation--dependencies)  
 - [Inference Pipeline](#inference-pipeline)  
 - [Zone Extraction](#zone-extraction)
+- [Release of New A/V Annotations](#release-of-new-artery-vein-annotations)
 - [Citation](#citation)  
 
 ---
@@ -74,29 +75,7 @@ PY: Paraguay, FR: France, ES: Spain, NAf: North Africa, BR: Brazil, CR: Croatia,
 
 ![Distribution shifts across datasets](figures/distribution_shift.png)
 
-*Illustrative retinal fundus images highlighting distribution shifts across datasets. **Left:** in-distribution (ID, green) examples from HRF, LES-AV, INSPIRE, and DRIVE used for model development. **Right:** representative out-of-distribution (OoD) images from near-OoD (TREND-AV, IOSTAR-AV, and MBRSET; yellow) and far-OoD (AV-WIDE, RAVIR; red) datasets showcasing substantial variability in imaging conditions, brightness, resolution, and field-of-view.*
-
-### **New A/V Annotated Datasets**
-
-Upon paper publication, we will release artery-vein segmentations extracted with OCULAR and semi-automatically refined using ground-truth binary vessel annotations for the following open-source datasets (>1,600 images):
-
-| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download |
-|--------|---|--------|-----|----------------|--------|-------------| --------|
-| ARIA | 143 | M | 50° | 576x768 | UK | DR, AMD | [[Link]](https://www.researchgate.net/post/How_can_I_find_the_ARIA_Automatic_Retinal_Image_Analysis_Dataset)
-| CHASE_DB1 | 28 | D | 30° | 1280x960 | UK | H | [[Link]](https://www.kaggle.com/datasets/rashasarhanalharthi/chase-db1)
-| DR HAGIS | 40 | M | 45° | [1880x2816], [1944x2896], [2136x3216], [2304x3456], [3168x4752] | UK | G, DR, AMD, HR | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
-| DRiDB | 50 | M | 45° | 576×720 | CR | DR | [[Link]](https://ipg.fer.hr/ipg/resources/image_database)
-| FIVES | 800 | M | 50° | 2048×2048 | CN | DR, POAG, AMD | [[Link]](https://figshare.com/articles/figure/FIVES_A_Fundus_Image_Dataset_for_AI-based_Vessel_Segmentation/19688169)
-| FOVEA | 80 | M | 45° | [1080x1920], [1934x1960] | UK | -- |[[Link]](https://github.com/rvimlab/FOVEA)
-| IDRiD | 81 | M | 50° | 2848x4288 | IN | DR | [[Link]](https://www.kaggle.com/datasets/aaryapatel98/indian-diabetic-retinopathy-image-dataset)
-| MESSIDOR-MAPLES-DR | 198 | M | 30° | 1444×1444 | FR | DR, ME | [[Link]](https://github.com/LIV4D/MAPLES-DR)
-| ORVS | 49 | D | 30° | 1444×1444 | CAN | -- | [[Link]](https://github.com/openmedlab/Awesome-Medical-Dataset/blob/main/resources/ORVS.md)
-| STARE | 18 | M | 35° | 605×700 | US | POAG | [[Link]](https://cecas.clemson.edu/~ahoover/stare/)
-| TREND | 72 | M | 45° | 2560×1960 | BE | G | [[Link]](https://zenodo.org/records/4521044)
-| UoA-DR | 200 | M, D | 45° | 1024×1024 | AUS | DR | [[Link]](https://auckland.figshare.com/articles/journal_contribution/UoA-DR_Database_Info/5985208)
-| VEVIO | 32 | M | 30° | 640x480 + mosaics | US | -- |[[Link]](https://people.duke.edu/~sf59/Estrada_BOE_2012.htm)
-
-
+*Figure 1. Illustrative retinal fundus images highlighting distribution shifts across datasets. **Left:** in-distribution (ID, green) examples from HRF, LES-AV, INSPIRE, and DRIVE used for model development. **Right:** representative out-of-distribution (OoD) images from near-OoD (TREND-AV, IOSTAR-AV, and MBRSET; yellow) and far-OoD (AV-WIDE, RAVIR; red) datasets showcasing substantial variability in imaging conditions, brightness, resolution, and field-of-view.*
 
 ## Pre-trained Models
 
@@ -127,6 +106,7 @@ wget https://huggingface.co/Anon-User-Retina/OCULARNet-nano/resolve/main/nano_f5
 - Classes: background, artery, vein, crossings
 
 ## Installation & Dependencies
+
 Clone the repository and install dependencies:
 
 ```bash
@@ -143,40 +123,40 @@ pip install -r requirements.txt
 - **Model weights** should be placed in:
 
   **OCULARNet**
-  ```text
+```text
   pretrained_weights/OCULARNet/OCULARNet.pth
-  ```
+```
 
   **OCULARNet-nano (5-fold ensemble)**
-  ```text
+```text
   pretrained_weights/OCULARNet-nano/
   ├── nano_f1.pth
   ├── nano_f2.pth
   ├── nano_f3.pth
   ├── nano_f4.pth
   └── nano_f5.pth
-  ```
+```
 
 - **Run inference** with the full OCULARNet model:
 
-  ```bash
+```bash
   python inference.py \
       --input_dir data/images \
       --output_dir segmentations/ \
       --weights pretrained_weights/OCULARNet/OCULARNet.pth \
       --device cuda
-  ```
+```
 
 - **Run inference** with the OCULARNet-nano ensemble:
 
-  ```bash
+```bash
   python inference.py \
       --input_dir data/images \
       --output_dir segmentations/ \
       --weights pretrained_weights/OCULARNet-nano/nano_f1.pth \
       --ensemble \
       --device cuda
-  ```
+```
 
 ---
 
@@ -209,13 +189,83 @@ Each file should be named consistently across all folders.
 
 [Download example data.zip](https://drive.google.com/file/d/1x01n3sbI_QUy8DxjQ2KSqKypHZpYw8Wy/view?usp=drive_link)
 
-
 ### How to Run
 
 ```bash
 python extract_zones.py --data_root /path/to/data \
                         --image_type ODC \
                         --fw 3
+```
+
+---
+
+## Release of New Artery-Vein Annotations
+
+### Datasets
+
+Upon paper publication, we will release artery-vein segmentations extracted with OCULAR and semi-automatically refined using ground-truth binary vessel annotations for the following open-source datasets (1,791 images):
+
+| Dataset | N | Center | FOV | Resolution (px) | Region | Pathologies | Download |
+|--------|---|--------|-----|----------------|--------|-------------| --------|
+| ARIA | 143 | M | 50° | 576x768 | UK | DR, AMD | [[Link]](https://www.researchgate.net/post/How_can_I_find_the_ARIA_Automatic_Retinal_Image_Analysis_Dataset)
+| CHASE_DB1 | 28 | D | 30° | 1280x960 | UK | H | [[Link]](https://www.kaggle.com/datasets/rashasarhanalharthi/chase-db1)
+| DR HAGIS | 40 | M | 45° | [1880x2816], [1944x2896], [2136x3216], [2304x3456], [3168x4752] | UK | G, DR, AMD, HR | [[Link]](https://www.kaggle.com/datasets/ba1b909c12dbe6c08df00b3ee6fc22d2fef632870359f91384b9001a870f67bf)
+| DRiDB | 50 | M | 45° | 576×720 | CR | DR | [[Link]](https://ipg.fer.hr/ipg/resources/image_database)
+| FIVES | 800 | M | 50° | 2048×2048 | CN | DR, POAG, AMD | [[Link]](https://figshare.com/articles/figure/FIVES_A_Fundus_Image_Dataset_for_AI-based_Vessel_Segmentation/19688169)
+| FOVEA | 80 | M | 45° | [1080x1920], [1934x1960] | UK | -- |[[Link]](https://github.com/rvimlab/FOVEA)
+| IDRiD | 81 | M | 50° | 2848x4288 | IN | DR | [[Link]](https://www.kaggle.com/datasets/aaryapatel98/indian-diabetic-retinopathy-image-dataset)
+| MESSIDOR-MAPLES-DR | 198 | M | 30° | 1444×1444 | FR | DR, ME | [[Link]](https://github.com/LIV4D/MAPLES-DR)
+| ORVS | 49 | D | 30° | 1444×1444 | CAN | -- | [[Link]](https://github.com/openmedlab/Awesome-Medical-Dataset/blob/main/resources/ORVS.md)
+| STARE | 18 | M | 35° | 605×700 | US | POAG | [[Link]](https://cecas.clemson.edu/~ahoover/stare/)
+| TREND | 72 | M | 45° | 2560×1960 | BE | G | [[Link]](https://zenodo.org/records/4521044)
+| UoA-DR | 200 | M, D | 45° | 1024×1024 | AUS | DR | [[Link]](https://auckland.figshare.com/articles/journal_contribution/UoA-DR_Database_Info/5985208)
+| VEVIO | 32 | M | 30° | 640x480 + mosaics | US | -- |[[Link]](https://people.duke.edu/~sf59/Estrada_BOE_2012.htm)
+
+### Semi-Automatic Refinement Procedure
+
+A/V annotation correction consisted in the following steps:
+
+1) 4-class (background, B; artery, A; vein, V; crossing; C) probability map extraction in 1024x1024 resolution using OCULAR-Net.
+2) Bicubic resizing plus Li threshold of corresponding ground-truth (GT) binary vessel maps to 1024x1024 resolution. Since we train at 1024x1024, we must refine at that resolution to encourage the best possible ground-truth quality.
+3) Removal of FP using the GT vessel mask.
+4) Addition of missing vessels (FNs) using the probability maps. At a FP pixel, where the model predicted B, we know $\textit{via}$ the GT maps that a vessel exists. Therefore, we momentarily assign the next most probable class, and annotate it using the following "soft" color palette:
+
+```
+class_to_color = {
+1: [238, 130, 238], #violet for arteries
+2: [135, 206, 235],  #sky blue for veins
+3: [180, 180, 0]     #dark yellow for crossings
+}
+```
+
+5) Finally, pixels which were assigned a vessel class and fall inside the vessel GT, are kept as the model predicted. This 5-step process generates a 7-color segmentation map ready for manual refinement.
+6) Using our own-built app, `annotation_tool.html`, we correct errors by "painting" on top of the pre-refined segmentation. Our app allows for the 3 canonical vessel classes and further allows an $\textit{uncertain}$ class in ambiguous situations. If a pixel is annotated as class $x$, it will be assigned that class in the final refined segmentation. Otherwise, if it was a TP it maintains its class; if it was a FN, it is assigned the corresponding hard label (i.e., from violet to red in arteries). Our tool saves the manual annotations as .png files. Resulting segmentations are multiplied with the GT vessel mask to eliminate FPs from the annotation process. 
+
+![Vessel Refinement Tool](figures/vessel_refinement.png)
+
+*Figure 2. Vessel refinement tool screenshot with zoomed-in failure modes from a FIVES sample. Our tool allows the selection of class to correct, brush size,, independent zoom for each view (segmentation, original fundus image) and annotation export in .zip files. The three failure modes are: (top left) artery bifurcates into a vein, i.e., label swap across a segment; (middle) missed a/v crossing; (bottom right) small independent vessel for which a label cannot be confidently assigned, i.e. uncertain.*
+
+### Usage
+
+**(1) Pre-refine single sample**
+
+```bash
+python vessel_refinement.py prerefine \
+  --prob path/to/prob.npy \
+  --vessel path/to/vessel.png \
+  --out output.png
+```
+
+After refining with our annotation tool:
+
+**(2) Final segmentation extraction**
+
+```bash
+python vessel_refinement.py refine \
+  --prerefined path/to/prerefined.png \
+  --annotation path/to/annotation.png \
+  --vessel path/to/vessel.png \
+  --out final.png
 ```
 
 ---
