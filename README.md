@@ -123,19 +123,19 @@ pip install -r requirements.txt
 - **Model weights** should be placed in:
 
   **OCULARNet**
-```text
-  pretrained_weights/OCULARNet/OCULARNet.pth
-```
-
+  ```text
+    pretrained_weights/OCULARNet/OCULARNet.pth
+  ```
+  
   **OCULARNet-nano (5-fold ensemble)**
-```text
-  pretrained_weights/OCULARNet-nano/
-  ├── nano_f1.pth
-  ├── nano_f2.pth
-  ├── nano_f3.pth
-  ├── nano_f4.pth
-  └── nano_f5.pth
-```
+  ```text
+    pretrained_weights/OCULARNet-nano/
+    ├── nano_f1.pth
+    ├── nano_f2.pth
+    ├── nano_f3.pth
+    ├── nano_f4.pth
+    └── nano_f5.pth
+  ```
 
 - **Run inference** with the full OCULARNet model:
 
